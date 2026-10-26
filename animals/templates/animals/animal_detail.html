@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ animal.name }} | Animal Rescue</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6f4;
+            color: #26332c;
+        }
+
+        header {
+            background: #176b4d;
+            color: white;
+            padding: 20px 7%;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        header p {
+            margin: 6px 0 0;
+            color: #e0f2e9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #176b4d;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .animal-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 5px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        .photo-section {
+            background: #e7eee9;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .animal-photo {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .no-photo {
+            color: #607268;
+            font-size: 18px;
+        }
+
+        .details-section {
+            padding: 30px;
+        }
+
+        .animal-name {
+            font-size: 32px;
+            margin: 0 0 12px;
+            color: #176b4d;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            background: #e0f5e7;
+            color: #176b4d;
+            margin-bottom: 20px;
+        }
+
+        .status-pending {
+            background: #fff1cf;
+            color: #8a5b00;
+        }
+
+        .status-adopted {
+            background: #e8e8e8;
+            color: #555;
+        }
+
+        .description {
+            line-height: 1.7;
+            color: #58645d;
+            margin: 20px 0;
+        }
+
+        .info-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #edf0ed;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .info-label {
+            color: #68756d;
+        }
+
+        .info-value {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .actions {
+            margin-top: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #176b4d;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 7px;
+            padding: 12px 18px;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 0 8px 8px 0;
+        }
+
+        .btn:hover {
+            background: #10563d;
+        }
+
+        .btn-secondary {
+            background: #e8eee9;
+            color: #26332c;
+        }
+
+        .btn-secondary:hover {
+            background: #dce5de;
+        }
+
+        .login-note {
+            margin-top: 14px;
+            color: #68756d;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #68756d;
+        }
+
+        @media (max-width: 700px) {
+            .animal-card {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-section {
+                min-height: 250px;
+            }
+
+            .animal-photo {
+                height: 280px;
+            }
+
+            .details-section {
+                padding: 22px;
+            }
+
+            .animal-name {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Animal Rescue & Adoption</h1>
+    <p>Every animal deserves a loving home.</p>
+</header>
+
+<main class="container">
+
+    <a href="{% url 'animal_list' %}" class="back-link">
+        &larr; Back to Animals
+    </a>
+
+    <div class="animal-card">
+
+        <div class="photo-section">
+            {% if animal.image %}
+                <img
+                    src="{{ animal.image.url }}"
+                    alt="{{ animal.name }}"
+                    class="animal-photo"
+                >
+            {% else %}
+                <div class="no-photo">No photo available</div>
+            {% endif %}
+        </div>
+
+        <section class="details-section">
+
+            <h2 class="animal-name">{{ animal.name }}</h2>
+
+            <span class="status
+                {% if animal.status == 'Pending' %}status-pending{% endif %}
+                {% if animal.status == 'Adopted' %}status-adopted{% endif %}">
+                {{ animal.status }}
+            </span>
+
+            <p class="description">
+                {{ animal.description|default:"No description available yet." }}
+            </p>
+
+            <div class="info-row">
+                <span class="info-label">Species</span>
+                <span class="info-value">{{ animal.species.name }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Breed</span>
+                <span class="info-value">
+                    {% if animal.breed %}
+                        {{ animal.breed.name }}
+                    {% else %}
+                        Not specified
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Age</span>
+                <span class="info-value">
+                    {{ animal.age }}
+                    {% if animal.age == 1 %}year{% else %}years{% endif %}
+                </span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Gender</span>
+                <span class="info-value">{{ animal.gender }}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Location</span>
+                <span class="info-value">{{ animal.location.name }}</span>
+            </div>
+
+            <div class="actions">
+
+                {% if animal.status == 'Available' %}
+                    {% if user.is_authenticated %}
+                        <a
+                            href="{% url 'adoption_request' animal.id %}"
+                            class="btn"
+                        >
+                            Request Adoption
+                        </a>
+                    {% else %}
+                        <a
+                            href="{% url 'login' %}?next={{ request.path|urlencode }}"
+                            class="btn"
+                        >
+                            Login to Adopt
+                        </a>
+
+                        <p class="login-note">
+                            Please log in to submit an adoption request.
+                        </p>
+                    {% endif %}
+                {% endif %}
+
+                <a
+                    href="{% url 'animal_list' %}"
+                    class="btn btn-secondary"
+                >
+                    Browse More Animals
+                </a>
+
+            </div>
+
+        </section>
+    </div>
+
+</main>
+
+<footer>
+    Animal Rescue & Adoption Management System
+</footer>
+
+</body>
+</html>

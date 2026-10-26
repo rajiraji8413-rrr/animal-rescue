@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Animal Rescue</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f7f4;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.10);
+        }
+
+        h1 {
+            color: #217a58;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-field p {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .helptext {
+            display: block;
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        ul.errorlist {
+            color: #b42318;
+            font-size: 13px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #217a58;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #185c41;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        a {
+            color: #217a58;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h1>🐾 Create Account</h1>
+        <p class="subtitle">Join us in helping rescued animals.</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-field">
+                {{ form.as_p }}
+            </div>
+
+            <button type="submit">Create Account</button>
+        </form>
+
+        <p class="login-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Log in</a>
+        </p>
+
+        <p class="login-link">
+            <a href="{% url 'animal_list' %}">Back to Animals</a>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Adoption Requests</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #286b4b;
+            text-align: center;
+        }
+
+        .request {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .Pending {
+            background: #fff0c2;
+            color: #805b00;
+        }
+
+        .Approved {
+            background: #d5f5df;
+            color: #176b36;
+        }
+
+        .Rejected {
+            background: #ffe0e0;
+            color: #a11b1b;
+        }
+
+        .back-link {
+            color: #286b4b;
+            text-decoration: none;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>My Adoption Requests</h1>
+
+        {% if adoption_requests %}
+            {% for adoption in adoption_requests %}
+                <div class="request">
+                    <h2>{{ adoption.animal.name }}</h2>
+
+                    <p>
+                        <strong>Submitted:</strong>
+                        {{ adoption.created_at|date:"d M Y, h:i A" }}
+                    </p>
+
+                    <p>
+                        <strong>Your message:</strong>
+                        {% if adoption.message %}
+                            {{ adoption.message|linebreaksbr }}
+                        {% else %}
+                            No message provided.
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        <span class="status {{ adoption.status }}">
+                            {{ adoption.status }}
+                        </span>
+                    </p>
+
+                    <a class="back-link"
+                       href="{% url 'animal_detail' adoption.animal.id %}">
+                        View Animal Details
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty">
+                <p>You have not submitted any adoption requests yet.</p>
+                <a class="back-link" href="{% url 'animal_list' %}">
+                    Browse Animals
+                </a>
+            </div>
+        {% endif %}
+
+        <p>
+            <a class="back-link" href="{% url 'animal_list' %}">
+                ← Back to Animals
+            </a>
+        </p>
+    </div>
+</body>
+</html>

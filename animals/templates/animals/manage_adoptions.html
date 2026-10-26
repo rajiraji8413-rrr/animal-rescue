@@ -1,0 +1,231 @@
+
+{% extends 'animals/base.html' %}
+
+{% block content %}
+<style>
+    .adoption-page {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+        padding: 30px 24px 40px;
+        box-sizing: border-box;
+        color: #20352c;
+    }
+
+    .adoption-page h2 {
+        margin: 0 0 10px;
+        font-size: 30px;
+    }
+
+    .adoption-description {
+        margin-bottom: 24px;
+    }
+
+    .adoption-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .adoption-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        table-layout: auto;
+    }
+
+    .adoption-table th,
+    .adoption-table td {
+        border: 1px solid #d6e1da;
+        padding: 12px;
+        text-align: left;
+        vertical-align: top;
+        overflow-wrap: anywhere;
+    }
+
+    .adoption-table th {
+        background: #176b4d;
+        color: white;
+        white-space: nowrap;
+    }
+
+    .adoption-table tbody tr:nth-child(even) {
+        background: #f0f6f2;
+    }
+
+    .adoption-status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 5px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fff0c2;
+        color: #755500;
+    }
+
+    .status-approved {
+        background: #d5f2df;
+        color: #176b35;
+    }
+
+    .status-rejected {
+        background: #f9dddd;
+        color: #9c2525;
+    }
+
+    .adoption-button {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        border: 0;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .approve-button {
+        background: #198754;
+    }
+
+    .reject-button {
+        background: #c0392b;
+    }
+
+    .empty-requests {
+        padding: 20px;
+        background: #eaf4ed;
+        border-radius: 6px;
+    }
+
+    @media (max-width: 700px) {
+        .adoption-page {
+            padding: 20px 12px;
+        }
+
+        .adoption-page h2 {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<div class="adoption-page">
+    <h2>Admin Adoption Management</h2>
+
+    <p class="adoption-description">
+        Review and manage animal adoption requests.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="get" style="margin-bottom: 20px;">
+        <label for="status">Filter by status:</label>
+
+        <select name="status" id="status">
+            <option value="">All requests</option>
+
+            <option value="Pending"
+                {% if selected_status == 'Pending' %}selected{% endif %}>
+                Pending
+            </option>
+
+            <option value="Approved"
+                {% if selected_status == 'Approved' %}selected{% endif %}>
+                Approved
+            </option>
+
+            <option value="Rejected"
+                {% if selected_status == 'Rejected' %}selected{% endif %}>
+                Rejected
+            </option>
+        </select>
+
+        <button type="submit">Filter</button>
+        <a href="{% url 'manage_adoptions' %}">Clear</a>
+    </form>
+
+    {% if adoption_requests %}
+        <div class="adoption-table-wrap">
+            <table class="adoption-table">
+                <thead>
+                    <tr>
+                        <th>Animal</th>
+                        <th>Applicant</th>
+                        <th>Message</th>
+                        <th>Requested On</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for adoption in adoption_requests %}
+                        <tr>
+                            <td>{{ adoption.animal.name }}</td>
+
+                            <td>
+                                {{ adoption.applicant.username }}
+                            </td>
+
+                            <td>
+                                {% if adoption.message %}
+                                    {{ adoption.message }}
+                                {% else %}
+                                    No message
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ adoption.created_at|date:"d M Y, h:i A" }}
+                            </td>
+
+                            <td>
+                                <span class="adoption-status {% if adoption.status == 'Pending' %}status-pending{% elif adoption.status == 'Approved' %}status-approved{% else %}status-rejected{% endif %}">
+                                    {{ adoption.status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if adoption.status == 'Pending' %}
+                                    <form method="post"
+                                          action="{% url 'manage_adoption_request' adoption.id %}">
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            name="action"
+                                            value="approve"
+                                            class="adoption-button approve-button">
+                                            Approve
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            name="action"
+                                            value="reject"
+                                            class="adoption-button reject-button">
+                                            Reject
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    No action available
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-requests">
+            No adoption requests found for this filter.
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

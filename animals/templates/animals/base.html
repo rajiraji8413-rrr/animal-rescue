@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Animal Rescue{% endblock %}</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7f6;
+            color: #25352e;
+        }
+
+        header {
+            background: #176b4d;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 24px;
+            text-align: center;
+            background: #173d30;
+            color: white;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            header h1 {
+                font-size: 22px;
+            }
+
+            main {
+                width: 94%;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <h1>🐾 Animal Rescue</h1>
+
+        <nav>
+            <a href="{% url 'animal_list' %}">Home</a>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'user_profile' %}">My Profile</a>
+                <a href="{% url 'my_adoption_requests' %}">My Requests</a>
+
+                {% if user.is_staff %}
+                    <a href="/admin/">Admin Panel</a>
+                {% endif %}
+
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+        <p>🐾 Animal Rescue &amp; Adoption Management System</p>
+        <p>Every animal deserves love, care, and a safe home.</p>
+    </footer>
+</body>
+</html>
