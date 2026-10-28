@@ -1,3 +1,4 @@
+
 """Django settings for the Animal Rescue project."""
 
 import os
@@ -8,7 +9,8 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables from the local .env file
+# Load environment variables from:
+# C:\Users\HAPPY\Desktop\Django\django_projects\animal_rescue\animal_rescue\.env
 load_dotenv(BASE_DIR / "animal_rescue" / ".env")
 
 # Security settings
@@ -74,8 +76,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "animal_rescue.wsgi.application"
 ASGI_APPLICATION = "animal_rescue.asgi.application"
 
-# Database: use PostgreSQL when DATABASE_URL is configured;
-# otherwise use the existing local SQLite database.
+# Database
+# Use PostgreSQL when DATABASE_URL is configured.
+# Otherwise, use the existing local SQLite database.
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
@@ -96,6 +99,12 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": (
             "django.contrib.auth.password_validation."
             "MinimumLengthValidator"
+        ),
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
         ),
     },
     {
@@ -139,10 +148,26 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Email settings
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "animalrescue@example.com"
+# Email settings - Mailtrap SMTP
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv(
+    "EMAIL_HOST",
+    "sandbox.smtp.mailtrap.io",
+)
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "2525"))
+EMAIL_USE_TLS = os.getenv(
+    "EMAIL_USE_TLS",
+    "True",
+).lower() in ("true", "1", "yes")
 
-# Mailtrap credentials loaded from .env
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    "Animal Rescue <rescue@example.com>",
+)
+
+# Optional Mailtrap API settings
 MAILTRAP_API_TOKEN = os.getenv("MAILTRAP_API_TOKEN", "")
 MAILTRAP_INBOX_ID = os.getenv("MAILTRAP_INBOX_ID", "")
